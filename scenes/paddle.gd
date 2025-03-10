@@ -29,7 +29,9 @@ func player_mouse_move(event: InputEvent) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and "position" in event:
 		position.y = event.position.y
 
-
+# AI will simply follow the ball position based on the AI speed. This AI is
+# beatable because the speed is lower than the ball speed. So eventually the ball
+# will outpace the AI.
 func ai_move(delta: float) -> void:
 	var ball : RigidBody2D = get_parent().get_node("Ball")
 	
@@ -37,20 +39,18 @@ func ai_move(delta: float) -> void:
 		position.y -= ai_speed * delta
 	elif ball.position.y > position.y:
 		position.y += ai_speed * delta
-	
-	pass
 
+# Incrementally increase the AI difficulty
 func increase_ai_difficulty() -> void:
 	ai_speed += difficulty_increase_speed
 
+# Reset the AI difficulty back to the default value
 func reset_ai_difficulty() -> void:
 	ai_speed = default_ai_speed
 
+# Reset the paddle back to the center
 func reset_position() -> void:
 	position.y = paddle_starting_position_y
-
-func _ready() -> void:
-	pass
 
 func _process(delta: float) -> void:
 	if use_ai:
@@ -65,7 +65,5 @@ func _input(event: InputEvent) -> void:
 	apply_bounds()
 
 func _on_ball_body_entered(body: Node) -> void:
-	print("Body entered")
 	if body.is_in_group("Ball"):
-		print("Body is ball")
 		body.velocity.x *= -1
